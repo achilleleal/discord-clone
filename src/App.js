@@ -1,11 +1,18 @@
 import React from 'react';
 import './App.css';
 
+import Sidebar from './features/Sidebar'
+
 function App() {
   return (
     <div className="app">
       <header className="App-header">
-        <h2>Discord Clone!</h2>
+        
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Chat */}
+
       </header>
     </div>
   );
