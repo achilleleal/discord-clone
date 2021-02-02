@@ -7,13 +7,13 @@ import { FiHelpCircle } from "react-icons/fi";
 
 import './ChatHeader.sass'
 
-export default function ChatHeader() {
+export default function ChatHeader({ channelName }) {
     return (
         <header className="chatHeader">
             <div className="chatHeader__left">
                 <h3>
                     <span className="chatHeader__hash">#</span>
-                    Test Channel Name
+                    {channelName}
                 </h3>
             </div>
             <div className="chatHeader__right">

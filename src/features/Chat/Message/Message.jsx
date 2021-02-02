@@ -2,18 +2,18 @@ import React from 'react'
 import { Avatar } from '@material-ui/core'
 import './Message.sass'
 
-export default function Message() {
+export default function Message({ user, timestamp, message }) {
     return (
         <div className="message">
-            <Avatar />
+            <Avatar src={user.photo}/>
             <div className="message__info">
                 <h4>
-                    Achille 
+                    {user.displayName} 
                     <span className="message__timestamp">
-                        This is a timestamp
+                        {new Date(timestamp?.toDate()).toUTCString()}
                     </span>
                 </h4>
-                <p>This is a message</p>
+                <p>{message}</p>
             </div>
         </div>
     )

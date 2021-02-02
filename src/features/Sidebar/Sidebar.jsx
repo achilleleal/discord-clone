@@ -1,4 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { useSelector } from 'react-redux'
+import { selectUser } from '../slices/userSlice'
 
 import { MdExpandMore, MdSignalCellular4Bar, MdCall, MdSettings } from "react-icons/md"
 import { RiAddFill, RiHeadphoneFill, RiHeadphoneLine } from "react-icons/ri"
@@ -8,8 +11,33 @@ import { Avatar } from '@material-ui/core'
 
 import SidebarChannel from './SidebarChannel'
 import './Sidebar.sass'
+import db, { auth } from '../../firebase/firebase'
 
 export default function Sidebar() {
+
+    const user = useSelector(selectUser);
+    const [channels, setChannels] = useState([]);
+
+    useEffect(() => {
+        db.collection('channels').onSnapshot(snapshot => {
+            setChannels(snapshot.docs.map(doc => ({
+                id: doc.id,
+                channel: doc.data(),
+            })))
+        })
+        console.log(channels);
+    }, [])
+
+    const handleAddChannel = () => {
+        const channelName = prompt("Enter a channel name");
+
+        if (channelName) {
+            db.collection('channels').add({
+                channelName,
+            })
+        }
+    }
+
     return (
         <div className="sidebar">
             <header className="sidebar__top">
@@ -24,14 +52,17 @@ export default function Sidebar() {
                         <h4>Text Channels</h4>
                     </div>
 
-                    <RiAddFill className="sidebar__addChannel"/>
+                    <RiAddFill onClick={handleAddChannel} className="sidebar__addChannel"/>
                 </header>
 
                 <div className="sidebar__channelsList">
-                    <SidebarChannel/>
-                    <SidebarChannel/>
-                    <SidebarChannel/>
-                    <SidebarChannel/>
+                    {channels.map(({ id, channel }) => 
+                        <SidebarChannel 
+                          key={id}
+                          id={id}
+                          channelName={channel.channelName}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -52,10 +83,10 @@ export default function Sidebar() {
             </div>
 
             <div className="sidebar__profile">
-                <Avatar src={'https://i.pinimg.com/originals/98/c0/83/98c08367933f07c451a18c4507f011a5.jpg'}/>
+                <Avatar onClick={() => auth.signOut()} src={user.photo}/>
                 <div className="sidebar__profileInfo">
-                    <h3>Achille</h3>
-                    <p>#myId</p>
+                    <h3>{user.displayName}</h3>
+                    <p>#{user.uid.substring(0,5)}</p>
                 </div>
                 <div className="sidebar__profileIcons">
                     <AiFillAudio />
