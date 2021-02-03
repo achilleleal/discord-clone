@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../slices/userSlice'
 
-import { MdExpandMore, MdSignalCellular4Bar, MdCall, MdSettings } from "react-icons/md"
-import { RiAddFill, RiHeadphoneFill, RiHeadphoneLine } from "react-icons/ri"
-import { AiOutlineInfoCircle, AiFillAudio, AiOutlineAudioMuted } from "react-icons/ai"
+import { MdExpandMore, MdSignalCellular4Bar, MdCall } from "react-icons/md"
+import { RiAddFill, RiHeadphoneFill } from "react-icons/ri"
+import { AiOutlineInfoCircle, AiFillAudio } from "react-icons/ai"
+import { BiLogOut } from 'react-icons/bi'
 
 import { Avatar } from '@material-ui/core'
 
@@ -25,7 +26,6 @@ export default function Sidebar() {
                 channel: doc.data(),
             })))
         })
-        console.log(channels);
     }, [])
 
     const handleAddChannel = () => {
@@ -52,7 +52,7 @@ export default function Sidebar() {
                         <h4>Text Channels</h4>
                     </div>
 
-                    <RiAddFill onClick={handleAddChannel} className="sidebar__addChannel"/>
+                    <RiAddFill onClick={handleAddChannel} className="sidebar__addChannel" title="Create a channel"/>
                 </header>
 
                 <div className="sidebar__channelsList">
@@ -83,15 +83,15 @@ export default function Sidebar() {
             </div>
 
             <div className="sidebar__profile">
-                <Avatar onClick={() => auth.signOut()} src={user.photo}/>
-                <div className="sidebar__profileInfo">
+                <Avatar src={user.photo} title="You!"/>
+                <div className="sidebar__profileInfo" title="You!">
                     <h3>{user.displayName}</h3>
                     <p>#{user.uid.substring(0,5)}</p>
                 </div>
                 <div className="sidebar__profileIcons">
-                    <AiFillAudio />
-                    <RiHeadphoneFill />
-                    <MdSettings />
+                    <AiFillAudio title="Mute"/>
+                    <RiHeadphoneFill title="Deafen"/>
+                    <BiLogOut onClick={() => auth.signOut()} title="Log out"/>
                 </div>
             </div>
 

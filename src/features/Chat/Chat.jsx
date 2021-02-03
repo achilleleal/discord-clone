@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import { MdAddCircle } from "react-icons/md";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { AiFillGift, AiOutlineGif } from "react-icons/ai";
+import { IoArrowDownCircle } from 'react-icons/io5';
 
 import ChatHeader from './ChatHeader'
 import Message from './Message'
@@ -22,6 +23,7 @@ export default function Chat() {
     const user = useSelector(selectUser)
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState([])
+
     useEffect(() => {
         if (channelId) {
             db.collection('channels')
@@ -34,8 +36,10 @@ export default function Chat() {
         }
     }, [channelId])
 
+    const chat = document.querySelector('.chat__messages');
+    const scrollToBottom = () => chat.scrollTop = chat.scrollHeight; // scroll to bottom of chat (newer messages)
 
-    const sendMessage = e => {
+    const sendMessage = (e) => {
         e.preventDefault();
         db.collection('channels')
           .doc(channelId)
@@ -45,21 +49,54 @@ export default function Chat() {
             user,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
           })
+          .then(scrollToBottom)
         setInput("")
+    }
+
+    const handleNoMessages = () => {
+        if (channelId) return (
+            <>
+                <h3>There are no messages in this channel yet</h3>
+                <p>Be the first one to send a message!</p>
+            </>
+        )
+        // else
+        return (
+            <>
+                <h3>You aren't inside a channel yet</h3>
+                <p>Enter one in the sidebar to the left to start talking</p>
+            </>
+        )
     }
 
     return (
         <div className="chat">
             <ChatHeader channelName={channelName}/>
-            <div className="chat__messages">
-                {messages.map(({ user, timestamp, message }) => 
-                    <Message 
-                      user={user}
-                      timestamp={timestamp}
-                      message={message}
-                    />
-                )}
+            <div className={`chat__messages ${!messages.length ? "chat__empty" : "" }`}>
+                {messages.length 
+                    ?
+                    messages.map(({ user, timestamp, message }) => 
+                        <Message 
+                        key={`${channelId}_${user}_${timestamp}_${Math.random() * 1000}`}
+                        user={user}
+                        timestamp={timestamp}
+                        message={message}
+                        />
+                    )
+
+                    : 
+                    <div>
+                        {handleNoMessages()}
+                    </div>
+                }
             </div>
+
+            <IoArrowDownCircle 
+              onClick={scrollToBottom} 
+              className="chat__toBottomBtn" 
+              title="Scroll to bottom"
+            />
+            
             <div className="chat__input">
                 <MdAddCircle />
                 <form onSubmit={sendMessage}>

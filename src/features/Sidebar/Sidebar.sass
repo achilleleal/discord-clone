@@ -16,6 +16,7 @@
 
 .sidebar__channels
     flex: 1
+    overflow: scroll
 
 .sidebar__addChannel:hover
     cursor: pointer
@@ -73,10 +74,12 @@
         height: auto
 
 
-.sidebar__profileIcons
-    > svg
-        padding: 10px
-        width: 20px
-        height: auto
+.sidebar__profileIcons svg
+    padding: 10px
+    width: 20px
+    height: auto
+    &:hover
+        cursor: pointer
+        color: white
 
 

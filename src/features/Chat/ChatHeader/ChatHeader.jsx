@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { IoMdNotifications, IoMdNotificationsOff, IoMdSend } from 'react-icons/io'
+import { IoMdNotifications, IoMdSend } from 'react-icons/io'
 import { IoLocationSharp, IoPeopleSharp } from 'react-icons/io5'
 import { FaSearch } from "react-icons/fa";
 import { FiHelpCircle } from "react-icons/fi";
