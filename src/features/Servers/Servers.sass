@@ -1,0 +1,37 @@
+.servers
+    flex: 0.2
+    color: white
+    display: flex
+    flex-direction: column
+    background-color: #232427
+
+.servers__list
+    flex: 1
+    display: flex
+    flex-direction: column
+    padding: .5rem 0
+    overflow: scroll
+
+    // Hide scrollbar
+    &::-webkit-scrollbar // Chrome, Safari and Opera
+        display: none
+    -ms-overflow-style: none  // IE and Edge
+    scrollbar-width: none  // Firefox
+
+    & > *
+        margin: .5rem auto
+
+.servers__addServer
+    justify-self: flex-end
+    color: white
+
+    .MuiButtonBase-root
+        display: flex
+        margin: 1rem auto
+        color: white
+        background: gray
+
+        &:hover
+            background: darkgray
+
+

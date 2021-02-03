@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { useSelector } from 'react-redux'
 import { selectUser } from '../slices/userSlice'
+import db, { auth } from '../../firebase/firebase'
 
 import { MdExpandMore, MdSignalCellular4Bar, MdCall } from "react-icons/md"
 import { RiAddFill, RiHeadphoneFill } from "react-icons/ri"
@@ -10,9 +11,9 @@ import { BiLogOut } from 'react-icons/bi'
 
 import { Avatar } from '@material-ui/core'
 
+import Servers from '../Servers'
 import SidebarChannel from './SidebarChannel'
 import './Sidebar.sass'
-import db, { auth } from '../../firebase/firebase'
 
 export default function Sidebar() {
 
@@ -39,7 +40,9 @@ export default function Sidebar() {
     }
 
     return (
-        <div className="sidebar">
+    <div className="sidebar">
+        <Servers />
+        <div className="sidebar__right">
             <header className="sidebar__top">
                 <h3>Server #1</h3>
                 <MdExpandMore />
@@ -94,8 +97,8 @@ export default function Sidebar() {
                     <BiLogOut onClick={() => auth.signOut()} title="Log out"/>
                 </div>
             </div>
-
         </div>
+    </div>
     )
 }
 
