@@ -1,41 +1,67 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Avatar, IconButton } from '@material-ui/core'
 import { FaPlus } from 'react-icons/fa'
 
 import './Servers.sass'
+import { useDispatch } from 'react-redux'
+import { setServerInfo } from '../slices/appSlice'
+import db from '../../firebase/firebase'
 
 export default function Servers() {
+    
+    const dispatch = useDispatch()
+    const [serverList, setServerList] = useState([])
 
-    const serverList = [
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-        <Avatar />,
-    ]
+    useEffect(() => {
+        db.collection('servers').onSnapshot(snapshot => {
+            setServerList(snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    name: data.serverName,
+                    photo: data.serverPhoto
+                }
+            }
+            ))
+        })
+    }, [serverList])
+
+    const changeServer = (id, name) => {
+        dispatch(
+            setServerInfo({
+                serverId: id,
+                serverName: name
+            })
+        )
+    }
+
+    const createServer = () => {
+        const serverName = prompt("Enter the server's name");
+        const serverPhoto = prompt("Enter the server's image URL");
+    
+        if (serverName) {
+            db.collection('servers').add({
+                serverName,
+                serverPhoto
+            })
+        }
+    }
 
     return (
         <div className="servers">
             <div className="servers__list">
-                {serverList.map(server => <Avatar src='' onClick='' title={server.name}/>)}
+                {serverList.map(({ id, name, photo}) => 
+                    <Avatar 
+                      src={photo} 
+                      onClick={() => changeServer(id, name)}
+                      title={name}
+                      key={id}
+                    />)}
             </div>
             
             <footer className="servers__addServer">
-                <IconButton title="Add a server">
+                <IconButton onClick={createServer} title="Add a server">
                     <FaPlus />
                 </IconButton>
             </footer>

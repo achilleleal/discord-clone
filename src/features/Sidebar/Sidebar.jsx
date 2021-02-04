@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { useSelector } from 'react-redux'
 import { selectUser } from '../slices/userSlice'
+import { selectServerId, selectServerName } from '../slices/appSlice'
 import db, { auth } from '../../firebase/firebase'
 
 import { MdExpandMore, MdSignalCellular4Bar, MdCall } from "react-icons/md"
@@ -18,22 +19,34 @@ import './Sidebar.sass'
 export default function Sidebar() {
 
     const user = useSelector(selectUser);
+
+    const serverId = useSelector(selectServerId)
+    const serverName = useSelector(selectServerName)
+
     const [channels, setChannels] = useState([]);
 
+    // Reference to access the db
+    const channelsRef = () => db.collection('servers').doc(serverId).collection('channels');
+
+    // Get server channels
     useEffect(() => {
-        db.collection('channels').onSnapshot(snapshot => {
-            setChannels(snapshot.docs.map(doc => ({
-                id: doc.id,
-                channel: doc.data(),
-            })))
-        })
-    }, [])
+        if (serverId) {
+            setChannels([])
+            console.log(`Getting channels for ${serverName}`);
+            channelsRef().onSnapshot(snapshot => {
+                setChannels(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    channel: doc.data(),
+                })))
+            })
+        }
+    }, [serverId])
 
     const handleAddChannel = () => {
         const channelName = prompt("Enter a channel name");
 
         if (channelName) {
-            db.collection('channels').add({
+            channelsRef().add({
                 channelName,
             })
         }
@@ -44,7 +57,7 @@ export default function Sidebar() {
         <Servers />
         <div className="sidebar__right">
             <header className="sidebar__top">
-                <h3>Server #1</h3>
+                <h3>{serverName}</h3>
                 <MdExpandMore />
             </header>
 

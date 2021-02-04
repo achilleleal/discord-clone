@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@material-ui/core'
 import { auth, provider } from '../../firebase/firebase.js'
 import './Login.sass'
@@ -15,6 +15,10 @@ export default function Login() {
             console.log(err);
         });
     }
+
+    useEffect(() => {
+        document.title = 'Login - Discord Clone'
+    }, [])
 
     return (
         <div className="login">

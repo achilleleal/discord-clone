@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { useSelector } from 'react-redux';
-import { selectChannelId, selectChannelName } from '../slices/appSlice';
+import { selectChannelId, selectChannelName, selectServerId } from '../slices/appSlice';
 import { selectUser } from '../slices/userSlice';
 
 import db from '../../firebase/firebase';
@@ -18,17 +18,35 @@ import './Chat.sass'
 
 export default function Chat() {
 
+    const serverId = useSelector(selectServerId)
     const channelId = useSelector(selectChannelId)
     const channelName = useSelector(selectChannelName)
+
     const user = useSelector(selectUser)
-    const [input, setInput] = useState('')
+
+    const [input, setInput] = useState('') // Chat input
     const [messages, setMessages] = useState([])
 
+    // Reference to access the db
+    const messagesRef = () => db.collection('servers')
+                                .doc(serverId)
+                                .collection("channels")
+                                .doc(channelId)
+                                .collection("messages");
+
+    // Change page title 
+    useEffect(() => {
+        document.title = `${channelName ? `#${channelName}` : 'Menu'} - Discord Clone`
+    }, [channelName])
+
+    // Scroll to bottom of chat (newer messages)
+    const chat = document.querySelector('.chat__messages');
+    const scrollToBottom = () => chat.scrollTop = chat.scrollHeight; 
+
+    // Get server messages
     useEffect(() => {
         if (channelId) {
-            db.collection('channels')
-              .doc(channelId)
-              .collection("messages")
+            messagesRef()
               .orderBy('timestamp', 'asc')
               .onSnapshot(snapshot => 
                 setMessages(snapshot.docs.map(doc => doc.data()))
@@ -36,14 +54,15 @@ export default function Chat() {
         }
     }, [channelId])
 
-    const chat = document.querySelector('.chat__messages');
-    const scrollToBottom = () => chat.scrollTop = chat.scrollHeight; // scroll to bottom of chat (newer messages)
+    // Clear server messages
+    useEffect(() => {
+        setMessages([])
+    }, [serverId])
+
 
     const sendMessage = (e) => {
         e.preventDefault();
-        db.collection('channels')
-          .doc(channelId)
-          .collection("messages")
+        messagesRef()
           .add({
             message: input,
             user,
