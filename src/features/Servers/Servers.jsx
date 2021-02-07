@@ -4,8 +4,8 @@ import { Avatar, IconButton } from '@material-ui/core'
 import { FaPlus } from 'react-icons/fa'
 
 import './Servers.sass'
-import { useDispatch } from 'react-redux'
-import { setServerInfo } from '../slices/appSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectServerId, setServerInfo } from '../slices/appSlice'
 import db from '../../firebase/firebase'
 
 export default function Servers() {
@@ -27,7 +27,9 @@ export default function Servers() {
         })
     }, [serverList])
 
+    const currentServerId = useSelector(selectServerId);
     const changeServer = (id, name) => {
+        if (currentServerId !==id)
         dispatch(
             setServerInfo({
                 serverId: id,

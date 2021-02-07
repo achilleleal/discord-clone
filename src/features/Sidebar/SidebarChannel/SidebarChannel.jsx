@@ -1,19 +1,22 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { setChannelInfo } from '../../slices/appSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectChannelId, setChannelInfo } from '../../slices/appSlice'
 import './SidebarChannel.sass'
 
 export default function SidebarChannel({ id, channelName }) {
 
     const dispatch = useDispatch();
+    const currentChannelId = useSelector(selectChannelId);
 
     const changeChannel = () => {
-        dispatch(
-            setChannelInfo({
-                channelId: id,
-                channelName: channelName
-            })
-        )
+        if (currentChannelId !== id) {
+            dispatch(
+                setChannelInfo({
+                    channelId: id,
+                    channelName: channelName
+                })
+            )
+        }
     }
 
     return (
