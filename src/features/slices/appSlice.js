@@ -12,12 +12,9 @@ export const appSlice = createSlice({
   },
   reducers: {
     setServerInfo: (state, action) => ({
+      ...state,
       serverId: action.payload.serverId,
       serverName: action.payload.serverName,
-      currentChannel: {
-        channelId: null,
-        channelName: null
-      }
     }),
     setChannelInfo: (state, action) => ({
       ...state,

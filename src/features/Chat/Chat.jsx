@@ -57,7 +57,7 @@ export default function Chat() {
     // Clear server messages
     useEffect(() => {
         setMessages([])
-    }, [serverId])
+    }, [channelId])
 
 
     const sendMessage = (e) => {
