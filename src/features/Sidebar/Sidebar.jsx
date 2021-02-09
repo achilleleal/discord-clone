@@ -61,26 +61,29 @@ export default function Sidebar() {
                 </header>
 
                 <div className={`sidebar__channelsList ${(!channels?.docs.length || loading || error) ? 'sidebar__channelsMessage' : ''}`}>
-                    { channels?.docs.length 
+                    { error 
+                        ? <h4>There was an error, please try again</h4>
+
+                        : channels?.docs.length
                             ?   (channels.docs.map((doc) => 
                                     <SidebarChannel 
                                     key={doc.id}
                                     id={doc.id}
                                     channelName={doc.data().channelName}
+                                    channelsRef={channelsRef}
                                     />
                                 ))
-                            :   <>
-                                <h4>There aren't any channels yet.</h4>
-                                <p>Create one with the plus button above!</p>
-                                </>
+
+                            : loading
+                                ?   <>
+                                        <h4>Loading...</h4>
+                                        <CircularProgress />
+                                    </> 
+                                :   <>
+                                        <h4>There aren't any channels yet.</h4>
+                                        <p>Create one with the plus button above!</p>
+                                    </>
                     }
-                    { loading && 
-                        <>
-                            <h4>Loading...</h4>
-                            <CircularProgress />
-                        </> 
-                    }
-                    { error && <h4>There was an error, please try again</h4>}
                 </div>
             </div>
 

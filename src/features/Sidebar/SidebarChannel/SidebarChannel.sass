@@ -1,16 +1,21 @@
 .sidebarChannel
-    h4
-        display: flex
-        padding-left: 15px
-        align-items: center
-        background-color: #2f3135
-        color: gray
-        cursor: pointer
+    display: flex
+    align-items: center
+    justify-content: space-between
+    padding: 10px 15px
+    color: gray
 
     &:hover
-        h4
+        color: white
+        background-color: #40464b
+
+    svg
+        color: gray
+        &:hover
             color: white
-            background-color: #40464b
+
+    h4, svg
+        cursor: pointer
 
 .sidebarChannel__hash
     font-size: 20px
