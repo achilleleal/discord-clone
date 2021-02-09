@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import { useSelector } from 'react-redux'
 import { selectUser } from '../slices/userSlice'
 import { selectServerId, selectServerName } from '../slices/appSlice'
 import db, { auth } from '../../firebase/firebase'
+import { useCollection } from 'react-firebase-hooks/firestore'
 
 import { MdExpandMore, MdSignalCellular4Bar, MdCall } from "react-icons/md"
 import { RiAddFill, RiHeadphoneFill } from "react-icons/ri"
 import { AiOutlineInfoCircle, AiFillAudio } from "react-icons/ai"
 import { BiLogOut } from 'react-icons/bi'
 
-import { Avatar } from '@material-ui/core'
+import { Avatar, CircularProgress } from '@material-ui/core'
 
 import Servers from '../Servers'
 import SidebarChannel from './SidebarChannel'
@@ -23,32 +24,20 @@ export default function Sidebar() {
     const serverId = useSelector(selectServerId)
     const serverName = useSelector(selectServerName)
 
-    const [channels, setChannels] = useState([]);
-
     // Reference to access the db
-    const channelsRef = () => db.collection('servers').doc(serverId).collection('channels');
+    const channelsRef = serverId ? db.collection('servers').doc(serverId).collection('channels') : null;
 
-    // Get server channels
-    useEffect(() => {
-        if (serverId) {
-            setChannels([])
-            console.log(`Getting channels for ${serverName}`);
-            channelsRef().onSnapshot(snapshot => {
-                setChannels(snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    channel: doc.data(),
-                })))
-            })
-        }
-    }, [serverId])
+    const [channels, loading, error] = useCollection(channelsRef);
 
     const handleAddChannel = () => {
-        const channelName = prompt("Enter a channel name");
+        if (serverId) {
+            const channelName = prompt("Enter a channel name");
 
-        if (channelName) {
-            channelsRef().add({
-                channelName,
-            })
+            if (channelName) {
+                channelsRef.add({
+                    channelName,
+                })
+            }
         }
     }
 
@@ -71,14 +60,27 @@ export default function Sidebar() {
                     <RiAddFill onClick={handleAddChannel} className="sidebar__addChannel" title="Create a channel"/>
                 </header>
 
-                <div className="sidebar__channelsList">
-                    {channels.map(({ id, channel }) => 
-                        <SidebarChannel 
-                          key={id}
-                          id={id}
-                          channelName={channel.channelName}
-                        />
-                    )}
+                <div className={`sidebar__channelsList ${(!channels?.docs.length || loading || error) ? 'sidebar__channelsMessage' : ''}`}>
+                    { channels?.docs.length 
+                            ?   (channels.docs.map((doc) => 
+                                    <SidebarChannel 
+                                    key={doc.id}
+                                    id={doc.id}
+                                    channelName={doc.data().channelName}
+                                    />
+                                ))
+                            :   <>
+                                <h4>There aren't any channels yet.</h4>
+                                <p>Create one with the plus button above!</p>
+                                </>
+                    }
+                    { loading && 
+                        <>
+                            <h4>Loading...</h4>
+                            <CircularProgress />
+                        </> 
+                    }
+                    { error && <h4>There was an error, please try again</h4>}
                 </div>
             </div>
 
