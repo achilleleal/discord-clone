@@ -62,14 +62,17 @@ export default function Chat() {
 
     const sendMessage = (e) => {
         e.preventDefault();
-        messagesRef()
-          .add({
-            message: input,
-            user,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          })
-          .then(scrollToBottom)
-        setInput("")
+        const trimmedInput = input.trim();
+        if (trimmedInput) {
+            messagesRef()
+            .add({
+                message: trimmedInput,
+                user,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(scrollToBottom)
+            setInput("")
+        }
     }
 
     const handleNoMessages = () => {
