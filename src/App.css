@@ -12,7 +12,7 @@
     align-items: center;
 }
 
-.fallback_load .MuiCircularProgress-svg {
+.fallback .MuiCircularProgress-svg {
     color: #4fb185;
 }
 
