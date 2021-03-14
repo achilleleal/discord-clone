@@ -5,7 +5,7 @@ import { selectChannelId, selectChannelName, selectServerId } from '../slices/ap
 import { selectUser } from '../slices/userSlice';
 
 import db from '../../firebase/firebase';
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 
 import { MdAddCircle } from "react-icons/md";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
