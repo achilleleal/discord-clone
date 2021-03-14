@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, login, logout } from './features/slices/userSlice'
 
-import Sidebar from './features/Sidebar'
-import Chat from './features/Chat'
-import Login from './features/Login/Login';
 import './App.css';
 import { auth } from './firebase/firebase';
+import { CircularProgress } from '@material-ui/core'
+
+import Login from './features/Login/Login';
+const Sidebar = React.lazy(() => import('./features/Sidebar')) 
+const Chat =  React.lazy(() => import('./features/Chat'))
+
+const loadFallback = <div className="fallback"><CircularProgress /></div>
 
 function App() {
   const dispatch = useDispatch()
@@ -34,10 +38,10 @@ function App() {
     <div className="app">
       {user 
         ?
-          <>
+          <Suspense fallback={loadFallback}>
             <Sidebar />
             <Chat />
-          </>
+          </Suspense>
         : <Login />
       }  
     </div>

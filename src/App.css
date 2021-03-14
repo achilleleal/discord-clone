@@ -1,3 +1,16 @@
 .app {
     display: flex;
 }
+
+.fallback {
+    background-color: #2f3135;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.fallback .MuiCircularProgress-svg {
+    color: #4fb185;
+}
