@@ -7,7 +7,8 @@ import './App.css';
 import { auth } from './firebase/firebase';
 import { CircularProgress } from '@material-ui/core'
 
-import Login from './features/Login/Login';
+import ErrorBoundary from './features/ErrorBoundary';
+import Login from './features/Login';
 const Sidebar = React.lazy(() => import('./features/Sidebar')) 
 const Chat =  React.lazy(() => import('./features/Chat'))
 
@@ -35,16 +36,18 @@ function App() {
   }, [dispatch])
 
   return (
-    <div className="app">
-      {user 
-        ?
-          <Suspense fallback={loadFallback}>
-            <Sidebar />
-            <Chat />
-          </Suspense>
-        : <Login />
-      }  
-    </div>
+    <ErrorBoundary>
+      <div className="app">
+        {user 
+          ?
+            <Suspense fallback={loadFallback}>
+              <Sidebar />
+              <Chat />
+            </Suspense>
+          : <Login />
+        }  
+      </div>
+    </ErrorBoundary>
   );
 }
 
